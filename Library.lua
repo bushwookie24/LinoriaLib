@@ -37,7 +37,7 @@ local Library = {
     RiskColor = Color3.fromRGB(255, 50, 50),
 
     Black = Color3.new(0, 0, 0);
-    Font = Enum.Font.Code,
+    Font = Enum.Font.GothamBold,
 
     OpenedFrames = {};
     DependencyBoxes = {};
@@ -1152,7 +1152,7 @@ do
 
             local State = KeyPicker:GetState();
 
-            ContainerLabel.Text = string.format('[%s] %s (%s)', KeyPicker.Value, Info.Text, KeyPicker.Mode);
+            ContainerLabel.Text = string.format('[%s] %s', KeyPicker.Value, Info.Text);
 
             ContainerLabel.Visible = true;
             ContainerLabel.TextColor3 = State and Library.AccentColor or Library.FontColor;
@@ -3521,7 +3521,7 @@ function Library:CreateWindow(...)
             -- A bit scuffed, but if we're going from not toggled -> toggled we want to show the frame immediately so that the fade is visible.
             Outer.Visible = true;
 
-            task.spawn(function()
+            --[[task.spawn(function()
                 -- TODO: add cursor fade?
                 local State = InputService.MouseIconEnabled;
 
@@ -3558,7 +3558,7 @@ function Library:CreateWindow(...)
 
                 Cursor:Remove();
                 CursorOutline:Remove();
-            end);
+            end);--]]
         end;
 
         for _, Desc in next, Outer:GetDescendants() do
