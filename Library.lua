@@ -1263,6 +1263,8 @@ do
                         Key = 'MB2';
                     end;
 
+                    InputService.InputEnded:Wait()
+
                     Break = true;
                     Picking = false;
 
