@@ -39,6 +39,20 @@ local Library = {
     Black = Color3.new(0, 0, 0);
     Font = Enum.Font.Cartoon,
 
+    BlacklistedKeys = {
+        [Enum.KeyCode.W] = true;
+        [Enum.KeyCode.A] = true;
+        [Enum.KeyCode.S] = true;
+        [Enum.KeyCode.D] = true;
+        [Enum.KeyCode.Space] = true;
+        [Enum.KeyCode.Escape] = true;
+        [Enum.KeyCode.Backspace] = true;
+        [Enum.KeyCode.Slash] = true;
+        [Enum.KeyCode.Return] = true;
+        [Enum.KeyCode.Delete] = true;
+        [Enum.KeyCode.Insert] = true,
+    };
+
     OpenedFrames = {};
     DependencyBoxes = {};
 
@@ -1008,7 +1022,7 @@ do
         assert(Info.Default, 'AddKeyPicker: Missing default value.');
 
         local KeyPicker = {
-            Value = Info.Default;
+            Value = Info.Default ~= 'None' and Info.Default or 'None';
             Toggled = false;
             Mode = Info.Mode or 'Toggle'; -- Always, Toggle, Hold
             Type = 'KeyPicker';
@@ -1048,7 +1062,7 @@ do
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
             TextSize = 13;
-            Text = Info.Default;
+            Text = KeyPicker.Value ~= 'None' and Info.Default or '...';
             TextWrapped = true;
             ZIndex = 8;
             Parent = PickInner;
@@ -1154,7 +1168,7 @@ do
 
             ContainerLabel.Text = string.format('[%s] %s', KeyPicker.Value, Info.Text);
 
-            ContainerLabel.Visible = true;
+            ContainerLabel.Visible = KeyPicker.Value ~= 'None' and true or false;
             ContainerLabel.TextColor3 = State and Library.AccentColor or Library.FontColor;
 
             Library.RegistryMap[ContainerLabel].Properties.TextColor3 = State and 'AccentColor' or 'FontColor';
@@ -1245,20 +1259,35 @@ do
                         Text = Text .. '.';
                         DisplayLabel.Text = Text;
 
-                        wait(0.4);
+                        task.wait(0.4);
                     end;
                 end);
 
-                wait(0.2);
+                task.wait(0.2);
 
                 local Event;
                 Event = InputService.InputBegan:Connect(function(Input)
+                     if Library.BlacklistedKeys[Input.KeyCode] or Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                        Break = true;
+                        Picking = false;
+
+                        DisplayLabel.Text = '...';
+                        KeyPicker.Value = 'None'
+
+                        Library:SafeCallback(KeyPicker.ChangedCallback, Input.KeyCode or Input.UserInputType)
+                        Library:SafeCallback(KeyPicker.Changed, Input.KeyCode or Input.UserInputType)
+
+                        Library:AttemptSave();
+
+                        Event:Disconnect();
+
+                        return
+                    end
+
                     local Key;
 
                     if Input.UserInputType == Enum.UserInputType.Keyboard then
                         Key = Input.KeyCode.Name;
-                    elseif Input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        Key = 'MB1';
                     elseif Input.UserInputType == Enum.UserInputType.MouseButton2 then
                         Key = 'MB2';
                     end;
@@ -2926,11 +2955,11 @@ function Library:Notify(Text, Time)
     pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, XSize + 8 + 4, 0, YSize), 'Out', 'Quad', 0.4, true);
 
     task.spawn(function()
-        wait(Time or 5);
+        task.wait(Time or 5);
 
         pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, 0, 0, YSize), 'Out', 'Quad', 0.4, true);
 
-        wait(0.4);
+        task.wait(0.4);
 
         NotifyOuter:Destroy();
     end);
