@@ -13,10 +13,8 @@ local Mouse = LocalPlayer:GetMouse();
 
 local ScreenGui = Instance.new('ScreenGui');
 
-if protectgui then
-    protectgui(ScreenGui)
-elseif gethui then
-    ScreenGui.Parent = gethui()
+if getgenv and getgenv().gethui then
+    ScreenGui.Parent = getgenv().gethui()
 end
 
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global;
