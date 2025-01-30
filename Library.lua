@@ -3123,6 +3123,19 @@ function Library:CreateWindow(...)
             Parent = TabButton;
         });
 
+         local Highlight = Library:Create('Frame', {
+            BackgroundColor3 = Library.AccentColor;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, 0, 0, 1.95);
+            ZIndex = 3;
+            Parent = TabButton;
+            Visible = false;
+        });
+
+        Library:AddToRegistry(Highlight, {
+            BackgroundColor3 = 'AccentColor';
+        });
+        
         local Blocker = Library:Create('Frame', {
             BackgroundColor3 = Library.MainColor;
             BorderSizePixel = 0;
@@ -3203,6 +3216,7 @@ function Library:CreateWindow(...)
             Blocker.BackgroundTransparency = 0;
             TabButton.BackgroundColor3 = Library.MainColor;
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = 'MainColor';
+            Highlight.Visible = true;
             TabFrame.Visible = true;
         end;
 
@@ -3210,6 +3224,7 @@ function Library:CreateWindow(...)
             Blocker.BackgroundTransparency = 1;
             TabButton.BackgroundColor3 = Library.BackgroundColor;
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = 'BackgroundColor';
+            Highlight.Visible = false;
             TabFrame.Visible = false;
         end;
 
@@ -3349,18 +3364,6 @@ function Library:CreateWindow(...)
                 BackgroundColor3 = 'BackgroundColor';
             });
 
-            local Highlight = Library:Create('Frame', {
-                BackgroundColor3 = Library.AccentColor;
-                BorderSizePixel = 0;
-                Size = UDim2.new(1, 0, 0, 2);
-                ZIndex = 10;
-                Parent = BoxInner;
-            });
-
-            Library:AddToRegistry(Highlight, {
-                BackgroundColor3 = 'AccentColor';
-            });
-
             local TabboxButtons = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 Position = UDim2.new(0, 0, 0, 1);
@@ -3400,6 +3403,19 @@ function Library:CreateWindow(...)
                     Parent = Button;
                 });
 
+                local Highlight = Library:Create('Frame', {
+                    BackgroundColor3 = Library.AccentColor;
+                    BorderSizePixel = 0;
+                    Size = UDim2.new(1, 0, 0, 2);
+                    ZIndex = 10;
+                    Parent = Button;
+                    Visible = false;
+                });
+    
+                Library:AddToRegistry(Highlight, {
+                    BackgroundColor3 = 'AccentColor';
+                });
+                
                 local Block = Library:Create('Frame', {
                     BackgroundColor3 = Library.BackgroundColor;
                     BorderSizePixel = 0;
@@ -3435,6 +3451,7 @@ function Library:CreateWindow(...)
                     end;
 
                     Container.Visible = true;
+                    Highlight.Visible = true;
                     Block.Visible = true;
 
                     Button.BackgroundColor3 = Library.BackgroundColor;
@@ -3445,6 +3462,7 @@ function Library:CreateWindow(...)
 
                 function Tab:Hide()
                     Container.Visible = false;
+                    Highlight.Visible = false;
                     Block.Visible = false;
 
                     Button.BackgroundColor3 = Library.MainColor;
