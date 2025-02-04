@@ -1,4 +1,7 @@
-local httpService = game:GetService('HttpService')
+local cloneref = cloneref or function(...) return ... end
+
+local httpService = cloneref(game:GetService('HttpService'))
+
 local ThemeManager = {} do
 	ThemeManager.Folder = 'LinoriaLibSettings'
 	-- if not isfolder(ThemeManager.Folder) then makefolder(ThemeManager.Folder) end
