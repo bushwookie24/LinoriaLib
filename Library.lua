@@ -8,10 +8,10 @@ local Players = cloneref(game:GetService('Players'));
 local RunService = cloneref(game:GetService('RunService'))
 local TweenService = cloneref(game:GetService('TweenService'));
 local RenderStepped = RunService.RenderStepped;
-local LocalPlayer = Players.LocalPlayer;
-local Mouse = LocalPlayer:GetMouse();
+local LocalPlayer = cloneref(Players.LocalPlayer);
+local Mouse = cloneref(LocalPlayer:GetMouse());
 
-local ScreenGui = Instance.new('ScreenGui');
+local ScreenGui = cloneref(Instance.new('ScreenGui'));
 
 if getgenv and getgenv().gethui then
     ScreenGui.Parent = getgenv().gethui()
@@ -139,7 +139,7 @@ function Library:Create(Class, Properties)
     local _Instance = Class;
 
     if type(Class) == 'string' then
-        _Instance = Instance.new(Class);
+        _Instance = cloneref(Instance.new(Class));
     end;
 
     for Property, Value in next, Properties do
@@ -1515,7 +1515,7 @@ do
 
         local function InitEvents(Button)
             local function WaitForEvent(event, timeout, validator)
-                local bindable = Instance.new('BindableEvent')
+                local bindable = cloneref(Instance.new('BindableEvent'))
                 local connection = event:Once(function(...)
 
                     if type(validator) == 'function' and validator(...) then
