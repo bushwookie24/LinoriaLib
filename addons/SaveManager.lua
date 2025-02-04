@@ -1,4 +1,6 @@
-local httpService = game:GetService('HttpService')
+local cloneref = cloneref or function(...) return ... end
+
+local httpService = cloneref(game:GetService('HttpService'))
 
 local SaveManager = {} do
 	SaveManager.Folder = 'LinoriaLibSettings'
