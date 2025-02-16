@@ -2,14 +2,14 @@ local cloneref = cloneref or function(...) return ... end
 
 local InputService = cloneref(game:GetService('UserInputService'));
 local TextService = cloneref(game:GetService('TextService'));
-local CoreGui = cloneref(game:GetService('CoreGui'));
+-- local CoreGui = cloneref(game:GetService('CoreGui'));
 local Teams = cloneref(game:GetService('Teams'));
 local Players = cloneref(game:GetService('Players'));
 local RunService = cloneref(game:GetService('RunService'))
 local TweenService = cloneref(game:GetService('TweenService'));
 local RenderStepped = RunService.RenderStepped;
-local LocalPlayer = cloneref(Players.LocalPlayer);
-local Mouse = cloneref(LocalPlayer:GetMouse());
+
+local Mouse = cloneref(Players.LocalPlayer:GetMouse());
 
 local ScreenGui = cloneref(Instance.new('ScreenGui'));
 
@@ -18,7 +18,7 @@ if getgenv and getgenv().gethui then
 end
 
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global;
-ScreenGui.Parent = CoreGui;
+-- ScreenGui.Parent = CoreGui;
 
 local Toggles = {};
 local Options = {};
