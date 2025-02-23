@@ -1215,8 +1215,12 @@ do
 
         function KeyPicker:SetValue(Data)
             local Key, Mode = Data[1], Data[2];
-            DisplayLabel.Text = Key;
-            KeyPicker.Value = Key;
+            
+            if Key ~= "None" then
+                DisplayLabel.Text = Key;
+                KeyPicker.Value = Key;
+            end
+            
             ModeButtons[Mode]:Select();
             KeyPicker:Update();
         end;
