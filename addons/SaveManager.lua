@@ -113,6 +113,20 @@ local SaveManager = {} do
 		return true
 	end
 
+	function SaveManager:Delete(name)
+		if (not name) then
+			return false, 'no config file is selected'
+		end
+
+		local fullPath = self.Folder .. '/settings/' .. name .. '.json'
+
+		if isfile(fullPath) then
+            delfile(fullPath)
+        end
+
+		return true
+	end
+	
 	function SaveManager:Load(name)
 		if (not name) then
 			return false, 'no config file is selected'
@@ -199,18 +213,15 @@ local SaveManager = {} do
 		end
 	end
 
-
 	function SaveManager:BuildConfigSection(tab)
 		assert(self.Library, 'Must set SaveManager.Library')
 
 		local section = tab:AddRightGroupbox('Configuration')
 
-		section:AddInput('SaveManager_ConfigName',    { Text = 'Config name' })
-		section:AddDropdown('SaveManager_ConfigList', { Text = 'Config list', Values = self:RefreshConfigList(), AllowNull = true })
+		section:AddInput('SaveManager_ConfigName',    { Text = 'Config Name' })
+		section:AddDropdown('SaveManager_ConfigList', { Text = 'Config List', Values = self:RefreshConfigList(), AllowNull = true})
 
-		section:AddDivider()
-
-		section:AddButton('Create config', function()
+		section:AddButton('Create', function()
 			local name = Options.SaveManager_ConfigName.Value
 
 			if name:gsub(' ', '') == '' then 
@@ -226,7 +237,27 @@ local SaveManager = {} do
 
 			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
 			Options.SaveManager_ConfigList:SetValue(nil)
-		end):AddButton('Load config', function()
+		end):AddButton('Delete', function()
+            local name = Options.SaveManager_ConfigList.Value
+
+			local success, err = self:Delete(name)
+			if not success then
+				return self.Library:Notify('Failed to delete config: ' .. err)
+			end
+
+			if isfile(self.Folder .. '/settings/autoload.txt') and readfile(self.Folder .. '/settings/autoload.txt') == name then
+				delfile(self.Folder .. '/settings/autoload.txt')
+			
+				SaveManager.AutoloadLabel:SetText("Current Autoload - N/A")
+			end
+
+            self.Library:Notify(string.format('Deleted config %q', name))
+
+            Options.SaveManager_ConfigList:SetValue(nil)
+			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+		end)
+        
+        section:AddButton('Load', function()
 			local name = Options.SaveManager_ConfigList.Value
 
 			local success, err = self:Load(name)
@@ -235,9 +266,7 @@ local SaveManager = {} do
 			end
 
 			self.Library:Notify(string.format('Loaded config %q', name))
-		end)
-
-		section:AddButton('Overwrite config', function()
+		end):AddButton('Overwrite', function()
 			local name = Options.SaveManager_ConfigList.Value
 
 			local success, err = self:Save(name)
@@ -248,23 +277,23 @@ local SaveManager = {} do
 			self.Library:Notify(string.format('Overwrote config %q', name))
 		end)
 
-		section:AddButton('Refresh list', function()
+		section:AddButton('Refresh List', function()
 			Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
 			Options.SaveManager_ConfigList:SetValue(nil)
 		end)
 
-		section:AddButton('Set as autoload', function()
+		section:AddButton('Set Autoload', function()
 			local name = Options.SaveManager_ConfigList.Value
 			writefile(self.Folder .. '/settings/autoload.txt', name)
-			SaveManager.AutoloadLabel:SetText('Current autoload config: ' .. name)
+			SaveManager.AutoloadLabel:SetText('Current Autoload - ' .. name)
 			self.Library:Notify(string.format('Set %q to auto load', name))
 		end)
 
-		SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
+		SaveManager.AutoloadLabel = section:AddLabel('Current Autoload - N/A', true)
 
 		if isfile(self.Folder .. '/settings/autoload.txt') then
 			local name = readfile(self.Folder .. '/settings/autoload.txt')
-			SaveManager.AutoloadLabel:SetText('Current autoload config: ' .. name)
+			SaveManager.AutoloadLabel:SetText('Current Autoload - ' .. name)
 		end
 
 		SaveManager:SetIgnoreIndexes({ 'SaveManager_ConfigList', 'SaveManager_ConfigName' })
